@@ -31,7 +31,7 @@ public class GroupController {
 	return "index";	
 	}
 	//解散队伍
-	@RequestMapping(value="/addGroup",method=RequestMethod.GET)
+	@RequestMapping(value="/deleteGroup",method=RequestMethod.GET)
 	public String deleteGroup(int groupid,ModelMap model) {
 	String mes = "";
 	if(GroupDao.delete(groupid) > 0){
@@ -44,7 +44,7 @@ public class GroupController {
 	}
 	
 	//更改队伍信息
-	@RequestMapping(value="/addGroup",method=RequestMethod.POST)
+	@RequestMapping(value="/updateGroup",method=RequestMethod.POST)
 	public String updateGroup(int groupid,String groupname,String info,ModelMap model) {
 		String mes = "";
 		Group group = new Group();
