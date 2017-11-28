@@ -25,7 +25,7 @@ public class user2groupDAO implements DatabaseConf{
 	 * 获取所有图书信息
 	 * @return
 	 */
-	public List<user2group> getAll(int page){
+	public List<user2group> getAll(){
 		List<user2group> user2groups = new ArrayList<user2group>();
 		try {
 			//加载MySQL数据库驱动程序
@@ -33,17 +33,8 @@ public class user2groupDAO implements DatabaseConf{
 			//创建数据库连接
 			int tot = total(); 
 			conn = DriverManager.getConnection(JDBCURL,User,password);
-			stmt = conn.prepareStatement( "SELECT * FROM t_usergroups limit ?, ?");
+			stmt = conn.prepareStatement( "SELECT * FROM t_usergroups");
 			
-			if(page * 10 < tot)
-			{
-				stmt.setInt(1, (page-1) * 10);
-				stmt.setInt(2, (page) * 10);
-			} else {
-				stmt.setInt(1, (page-1) * 10);
-				stmt.setInt(2, tot);
-			}
-
 			//定义数据库操作SQL语句:查询t_user2group表所有记录和所有字段
 			//创建数据库操作申明
 			//执行数据库查询，返回结果集
@@ -74,7 +65,124 @@ public class user2groupDAO implements DatabaseConf{
 		//返回结果集
 		return user2groups;		
 	}
-	
+	public List<user2group> getLeader(int id){
+		List<user2group> user2groups = new ArrayList<user2group>();
+		try {
+			//加载MySQL数据库驱动程序
+			Class.forName("com.mysql.jdbc.Driver");
+			//创建数据库连接
+			conn = DriverManager.getConnection(JDBCURL,User,password);
+			stmt = conn.prepareStatement( "SELECT * FROM t_usergroups where uid=? and leader=1");
+			stmt.setInt(1, id);
+			
+			//定义数据库操作SQL语句:查询t_user2group表所有记录和所有字段
+			//创建数据库操作申明
+			//执行数据库查询，返回结果集
+			user2group us = null;
+			//对结果集进行遍历，
+			rst = stmt.executeQuery();
+			while(rst.next()){
+				//将每条数据封装成一个新的user2group对象，一定要new
+				us = new user2group();
+				us.setId(rst.getInt("id"));
+				us.setDescription(rst.getString("description"));
+				us.setLeader(rst.getString("leader"));
+				us.setUid(rst.getInt("uid"));
+				us.setGid(rst.getInt("gid"));
+				//将user2group对象保存到List集合中
+				user2groups.add(us);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{  //一定要使用finally，释放资源
+			try {
+				stmt.close();  //关闭申明
+				conn.close();  //关闭连接
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return user2groups;		
+	}
+	public List<user2group> getByid(int id){
+		List<user2group> user2groups = new ArrayList<user2group>();
+		try {
+			//加载MySQL数据库驱动程序
+			Class.forName("com.mysql.jdbc.Driver");
+			//创建数据库连接
+			conn = DriverManager.getConnection(JDBCURL,User,password);
+			stmt = conn.prepareStatement( "SELECT * FROM t_usergroups where id=?");
+			stmt.setInt(1, id);
+			
+			//定义数据库操作SQL语句:查询t_user2group表所有记录和所有字段
+			//创建数据库操作申明
+			//执行数据库查询，返回结果集
+			user2group us = null;
+			//对结果集进行遍历，
+			rst = stmt.executeQuery();
+			while(rst.next()){
+				//将每条数据封装成一个新的user2group对象，一定要new
+				us = new user2group();
+				us.setId(rst.getInt("id"));
+				us.setDescription(rst.getString("description"));
+				us.setLeader(rst.getString("leader"));
+				us.setUid(rst.getInt("uid"));
+				us.setGid(rst.getInt("gid"));
+				//将user2group对象保存到List集合中
+				user2groups.add(us);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{  //一定要使用finally，释放资源
+			try {
+				stmt.close();  //关闭申明
+				conn.close();  //关闭连接
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return user2groups;		
+	}
+	public List<user2group> getMem(int id){
+		List<user2group> user2groups = new ArrayList<user2group>();
+		try {
+			//加载MySQL数据库驱动程序
+			Class.forName("com.mysql.jdbc.Driver");
+			//创建数据库连接
+			conn = DriverManager.getConnection(JDBCURL,User,password);
+			stmt = conn.prepareStatement( "SELECT * FROM t_usergroups where uid=? and leader=0");
+			stmt.setInt(1, id);
+			
+			//定义数据库操作SQL语句:查询t_user2group表所有记录和所有字段
+			//创建数据库操作申明
+			//执行数据库查询，返回结果集
+			user2group us = null;
+			//对结果集进行遍历，
+			rst = stmt.executeQuery();
+			while(rst.next()){
+				//将每条数据封装成一个新的user2group对象，一定要new
+				us = new user2group();
+				us.setId(rst.getInt("id"));
+				us.setDescription(rst.getString("description"));
+				us.setLeader(rst.getString("leader"));
+				us.setUid(rst.getInt("uid"));
+				us.setGid(rst.getInt("gid"));
+				//将user2group对象保存到List集合中
+				user2groups.add(us);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{  //一定要使用finally，释放资源
+			try {
+				stmt.close();  //关闭申明
+				conn.close();  //关闭连接
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		//返回结果集
+		return user2groups;		
+	}
 
 	/**
 	 * 添加user2group记录

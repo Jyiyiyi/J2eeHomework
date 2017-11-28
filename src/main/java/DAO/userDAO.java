@@ -31,19 +31,9 @@ public class userDAO implements DatabaseConf{
 			//加载MySQL数据库驱动程序
 			Class.forName("com.mysql.jdbc.Driver");
 			//创建数据库连接
-			int tot = total(); 
 			conn = DriverManager.getConnection(JDBCURL,User,password);
-			stmt = conn.prepareStatement( "SELECT * FROM t_user limit ?, ?");
+			stmt = conn.prepareStatement( "SELECT * FROM t_user ");
 			
-			if(page * 10 < tot)
-			{
-				stmt.setInt(1, (page-1) * 10);
-				stmt.setInt(2, (page) * 10);
-			} else {
-				stmt.setInt(1, (page-1) * 10);
-				stmt.setInt(2, tot);
-			}
-
 			//定义数据库操作SQL语句:查询t_user表所有记录和所有字段
 			//创建数据库操作申明
 			//执行数据库查询，返回结果集
@@ -113,6 +103,85 @@ public class userDAO implements DatabaseConf{
 			}
 		}
 		return result;
+	}
+
+	public user getByid(int id){
+		user us = new user();
+	try {
+		//加载MySQL数据库驱动程序
+		Class.forName("com.mysql.jdbc.Driver");
+		//创建数据库连接
+		conn = DriverManager.getConnection(JDBCURL,User,password);
+		stmt = conn.prepareStatement( "SELECT * FROM t_user where id=?");
+		stmt.setInt(1, id);
+		
+		//定义数据库操作SQL语句:查询t_user表所有记录和所有字段
+		//创建数据库操作申明
+		//执行数据库查询，返回结果集
+		//对结果集进行遍历，
+		rst = stmt.executeQuery();
+		while(rst.next()){
+			//将每条数据封装成一个新的user对象，一定要new
+			us = new user();
+			us.setId(rst.getInt("id"));
+			us.setName(rst.getString("name"));
+			us.setUsername(rst.getString("username"));
+			us.setPwd(rst.getString("password"));
+			us.setEmail(rst.getString("email"));
+			us.setUserType(rst.getString("userType"));
+			//将user对象保存到List集合中
+		}	
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally{  //一定要使用finally，释放资源
+		try {
+			stmt.close();  //关闭申明
+			conn.close();  //关闭连接
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	//返回结果集
+	return us;		
+}
+	public user getByname(String user){
+			user us = new user();
+		try {
+			//加载MySQL数据库驱动程序
+			Class.forName("com.mysql.jdbc.Driver");
+			//创建数据库连接
+			conn = DriverManager.getConnection(JDBCURL,User,password);
+			stmt = conn.prepareStatement( "SELECT * FROM t_user where username=?");
+			stmt.setString(1, user);
+			
+			//定义数据库操作SQL语句:查询t_user表所有记录和所有字段
+			//创建数据库操作申明
+			//执行数据库查询，返回结果集
+			//对结果集进行遍历，
+			rst = stmt.executeQuery();
+			while(rst.next()){
+				//将每条数据封装成一个新的user对象，一定要new
+				us = new user();
+				us.setId(rst.getInt("id"));
+				us.setName(rst.getString("name"));
+				us.setUsername(rst.getString("username"));
+				us.setPwd(rst.getString("password"));
+				us.setEmail(rst.getString("email"));
+				us.setUserType(rst.getString("userType"));
+				//将user对象保存到List集合中
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{  //一定要使用finally，释放资源
+			try {
+				stmt.close();  //关闭申明
+				conn.close();  //关闭连接
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		//返回结果集
+		return us;		
 	}
 
 	public int del(int id){
@@ -208,6 +277,6 @@ public class userDAO implements DatabaseConf{
 	public static void main(String[] args) {
 		userDAO userDao = new userDAO();	
 		//删除测试
-		System.out.println(userDao.total());
+		System.out.println(userDao.getByname("test1").getPwd());
 	}
 }

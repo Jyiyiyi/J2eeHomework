@@ -10,6 +10,7 @@ import java.util.List;
 
 import Base.DatabaseConf;
 import Base.group;
+import Base.user;
 
 public class groupDAO implements DatabaseConf{
 	
@@ -25,24 +26,15 @@ public class groupDAO implements DatabaseConf{
 	 * 获取所有图书信息
 	 * @return
 	 */
-	public List<group> getAll(int page){
+	public List<group> getAll(){
 		List<group> groups = new ArrayList<group>();
 		try {
 			//加载MySQL数据库驱动程序
 			Class.forName("com.mysql.jdbc.Driver");
 			//创建数据库连接
-			int tot = total(); 
 			conn = DriverManager.getConnection(JDBCURL,User,password);
-			stmt = conn.prepareStatement( "SELECT * FROM t_group limit ?, ?");
+			stmt = conn.prepareStatement( "SELECT * FROM t_group");
 			
-			if(page * 10 < tot)
-			{
-				stmt.setInt(1, (page-1) * 10);
-				stmt.setInt(2, (page) * 10);
-			} else {
-				stmt.setInt(1, (page-1) * 10);
-				stmt.setInt(2, tot);
-			}
 
 			//定义数据库操作SQL语句:查询t_group表所有记录和所有字段
 			//创建数据库操作申明
@@ -106,6 +98,74 @@ public class groupDAO implements DatabaseConf{
 		}
 		return result;
 	}
+	public group getByid(int id){
+		group us = new group();
+	try {
+		//加载MySQL数据库驱动程序
+		Class.forName("com.mysql.jdbc.Driver");
+		//创建数据库连接
+		conn = DriverManager.getConnection(JDBCURL,User,password);
+		stmt = conn.prepareStatement( "SELECT * FROM t_group where id=?");
+		stmt.setInt(1, id);
+		
+		//定义数据库操作SQL语句:查询t_user表所有记录和所有字段
+		//创建数据库操作申明
+		//执行数据库查询，返回结果集
+		//对结果集进行遍历，
+		rst = stmt.executeQuery();
+		while(rst.next()){
+			//将每条数据封装成一个新的user对象，一定要new
+			us.setId(rst.getInt("id"));
+			us.setGroupName(rst.getString("groupName"));;
+			//将user对象保存到List集合中
+		}	
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally{  //一定要使用finally，释放资源
+		try {
+			stmt.close();  //关闭申明
+			conn.close();  //关闭连接
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	//返回结果集
+	return us;		
+}
+	public group getByname(String name){
+		group us = new group();
+	try {
+		//加载MySQL数据库驱动程序
+		Class.forName("com.mysql.jdbc.Driver");
+		//创建数据库连接
+		conn = DriverManager.getConnection(JDBCURL,User,password);
+		stmt = conn.prepareStatement( "SELECT * FROM t_group where groupName=?");
+		stmt.setString(1, name);
+		
+		//定义数据库操作SQL语句:查询t_user表所有记录和所有字段
+		//创建数据库操作申明
+		//执行数据库查询，返回结果集
+		//对结果集进行遍历，
+		rst = stmt.executeQuery();
+		while(rst.next()){
+			//将每条数据封装成一个新的user对象，一定要new
+			us.setId(rst.getInt("id"));
+			us.setGroupName(rst.getString("groupName"));;
+			//将user对象保存到List集合中
+		}	
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally{  //一定要使用finally，释放资源
+		try {
+			stmt.close();  //关闭申明
+			conn.close();  //关闭连接
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	//返回结果集
+	return us;		
+}
 
 	public int del(int id){
 		int result = 0;
